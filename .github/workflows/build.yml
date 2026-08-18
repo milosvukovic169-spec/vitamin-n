@@ -18,6 +18,16 @@ jobs:
           echo "Found project at: $PUBSPEC_DIR"
           echo "PROJECT_DIR=$PUBSPEC_DIR" >> $GITHUB_ENV
 
+      - name: Ensure Gradle wrapper exists
+        working-directory: ${{ env.PROJECT_DIR }}/android
+        run: |
+          if [ ! -f gradle/wrapper/gradle-wrapper.properties ]; then
+            echo "Gradle wrapper missing — generating it now."
+            gradle wrapper --gradle-version 9.1.0
+          else
+            echo "Gradle wrapper already present."
+          fi
+
       - uses: subosito/flutter-action@v2
         with:
           flutter-version: '3.44.1'
@@ -40,6 +50,12 @@ jobs:
         with:
           name: vitamin-n-debug-apk
           path: ${{ env.PROJECT_DIR }}/build/app/outputs/flutter-apk/app-debug.apk
+
+
+
+
+
+
 
 
 
