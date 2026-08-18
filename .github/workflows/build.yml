@@ -40,51 +40,7 @@ jobs:
         with:
           name: vitamin-n-debug-apk
           path: ${{ env.PROJECT_DIR }}/build/app/outputs/flutter-apk/app-debug.apk
-EOF
-Output
 
-name: Build Android APK
-
-on:
-  workflow_dispatch:
-
-jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Extract project archive
-        run: |
-          sudo apt-get update -y
-          sudo apt-get install -y p7zip-full
-          7z x vitamin_n.7z -o extracted
-          PUBSPEC_DIR=$(dirname "$(find extracted -maxdepth 4 -name pubspec.yaml | head -n 1)")
-          echo "Found project at: $PUBSPEC_DIR"
-          echo "PROJECT_DIR=$PUBSPEC_DIR" >> $GITHUB_ENV
-
-      - uses: subosito/flutter-action@v2
-        with:
-          flutter-version: '3.44.1'
-          channel: 'stable'
-
-      - name: Install dependencies
-        working-directory: ${{ env.PROJECT_DIR }}
-        run: flutter pub get
-
-      - name: Generate code
-        working-directory: ${{ env.PROJECT_DIR }}
-        run: dart run build_runner build --delete-conflicting-outputs
-
-      - name: Build APK
-        working-directory: ${{ env.PROJECT_DIR }}
-        run: flutter build apk --debug
-
-      - name: Upload APK
-        uses: actions/upload-artifact@v4
-        with:
-          name: vitamin-n-debug-apk
-          path: ${{ env.PROJECT_DIR }}/build/app/outputs/flutter-apk/app-debug.apk
 
 
 
